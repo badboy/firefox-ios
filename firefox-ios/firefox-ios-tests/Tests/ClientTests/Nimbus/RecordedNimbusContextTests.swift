@@ -100,18 +100,12 @@ class RecordedNimbusContextTests: XCTestCase {
             cannotUseAppleIntelligence: true
         )
 
-        var value: GleanMetrics.NimbusSystem.RecordedNimbusContextObject?
-        let expectation = expectation(description: "The Firefox Suggest ping was sent")
-        NimbusGleanPings.nimbusTargetingContext.testBeforeNextSubmit { e in
-            value = GleanMetrics.NimbusSystem.recordedNimbusContext.testGetValue()
-            expectation.fulfill()
-        }
+        _ = NimbusGleanPings.nimbusTargetingContext
 
         recordedContext.setEventQueryValues(eventQueryValues: [RecordedNimbusContext.DAYS_OPENED_IN_LAST_28: 1.5])
         recordedContext.record()
-        NimbusGleanPings.nimbusTargetingContext.submit()
 
-        wait(for: [expectation], timeout: 5.0)
+        let value = GleanMetrics.NimbusSystem.recordedNimbusContext.testGetValue()
 
         XCTAssertNotNil(value)
         XCTAssertEqual(value?.appVersion, recordedContext.appVersion)
